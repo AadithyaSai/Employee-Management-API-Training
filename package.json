@@ -1,0 +1,36 @@
+{
+  "name": "employee-management-api-training",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "npx tsc",
+    "dev": "npx tsc-watch --onSuccess \"node dist/index.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AadithyaSai/Employee-Management-API-Training.git"
+  },
+  "keywords": [],
+  "author": "AadithyaSai",
+  "license": "MIT",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/AadithyaSai/Employee-Management-API-Training/issues"
+  },
+  "homepage": "https://github.com/AadithyaSai/Employee-Management-API-Training#readme",
+  "dependencies": {
+    "express": "^5.1.0",
+    "pg": "^8.16.0",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.24",
+    "typeorm-naming-strategies": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.2",
+    "@types/node": "^22.15.19",
+    "@types/pg": "^8.15.2",
+    "tsc-watch": "^6.3.1",
+    "typescript": "^5.8.3"
+  }
+}
