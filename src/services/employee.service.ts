@@ -1,4 +1,5 @@
 import { CreateAddressDto } from "../dto/create-address.dto";
+import { UpdateAddressDto } from "../dto/update-address.dto";
 import Address from "../entities/address.entity";
 import Employee from "../entities/employee.entity";
 import EmployeeRepository from "../repositories/employee.repository";
@@ -16,7 +17,6 @@ export default class EmployeeService {
     newEmployee.email = email;
     newEmployee.name = name;
     newEmployee.age = age;
-    console.log(address);
     newEmployee.address = new Address();
     newEmployee.address.line1 = address.line1;
     newEmployee.address.pincode = address.pincode;
@@ -36,18 +36,19 @@ export default class EmployeeService {
     email?: string,
     name?: string,
     age?: number,
-    address?: Address
+    address?: UpdateAddressDto
   ) {
-    const existingEmployee = await this.repo.fineOneById(employeeId);
-    if (existingEmployee) {
-      const employeeData = new Employee();
-      employeeData.name = name;
-      employeeData.email = email;
-      employeeData.age = age;
-      employeeData.address = address;
-
-      return this.repo.updateOneById(employeeId, employeeData);
+    const employeeData = new Employee();
+    employeeData.name = name;
+    employeeData.email = email;
+    employeeData.age = age;
+    if (address) {
+      employeeData.address = new Address();
+      employeeData.address.line1 = address.line1;
+      employeeData.address.pincode = address.pincode;
     }
+
+    return this.repo.updateOneById(employeeId, employeeData);
   }
 
   async deleteEmployeeById(employeeId: number): Promise<void> {

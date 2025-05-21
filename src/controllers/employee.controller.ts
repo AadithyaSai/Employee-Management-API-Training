@@ -6,6 +6,7 @@ import { isEmail } from "../validators/emailValidator";
 import { CreateEmployeeDto } from "../dto/create-employee.dto";
 import { validate } from "class-validator";
 import { plainToInstance } from "class-transformer";
+import { UpdateEmployeeDto } from "../dto/update-employee.dto";
 
 export default class EmployeeController {
   constructor(
@@ -61,25 +62,31 @@ export default class EmployeeController {
     }
   }
 
-  async updateEmployee(req: Request, res: Response) {
-    const employeeId = parseInt(req.params.id);
-    const { name, email, age, line1, pincode } = req.body;
-    let address: Address;
-    if (line1 && pincode) {
-      address = new Address();
-      address.line1 = line1;
-      address.pincode = pincode ? parseInt(pincode) : undefined;
-    }
-    const updatedEmployee = await this.employeeService.updateEmployeeById(
-      employeeId,
-      email,
-      name,
-      parseInt(age),
-      address
-    );
+  async updateEmployee(req: Request, res: Response, next: NextFunction) {
+    try {
+      const employeeId = parseInt(req.params.id);
+      const employee = await this.employeeService.getEmployeeById(employeeId);
+      if (!employee) {
+        throw new HttpException(404, "Employee not found");
+      }
+      const updateEmployeeDto = plainToInstance(UpdateEmployeeDto, req.body);
+      const errors = await validate(updateEmployeeDto);
+      if (errors.length > 0) {
+        console.log(JSON.stringify(errors));
+        throw new HttpException(400, JSON.stringify(errors));
+      }
+      const updatedEmployee = await this.employeeService.updateEmployeeById(
+        employeeId,
+        updateEmployeeDto.email,
+        updateEmployeeDto.name,
+        updateEmployeeDto.age,
+        updateEmployeeDto.address
+      );
 
-    if (updatedEmployee) res.status(200).send(updatedEmployee);
-    else res.status(404).send();
+      res.status(200).send(updatedEmployee);
+    } catch (err) {
+      next(err);
+    }
   }
 
   async deleteEmployee(req: Request, res: Response) {
