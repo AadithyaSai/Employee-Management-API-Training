@@ -2,6 +2,7 @@ import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import Employee from "../entities/employee.entity";
+import Address from "../entities/address.entity";
 
 const dataSource = new DataSource({
   type: "postgres",
@@ -17,7 +18,7 @@ const dataSource = new DataSource({
   synchronize: false,
   logging: true,
   namingStrategy: new SnakeNamingStrategy(),
-  entities: [Employee],
+  entities: ["dist/entities/*.js"],
   migrations: ["dist/db/migrations/*.js"],
 });
 
