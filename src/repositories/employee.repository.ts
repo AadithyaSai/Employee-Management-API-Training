@@ -9,22 +9,37 @@ export default class EmployeeRepository {
   }
 
   async findAll(): Promise<Employee[]> {
-    return this.repository.find();
+    return this.repository.find({
+      relations: {
+        address: true,
+      },
+    });
   }
 
   async fineOneById(employeeId: number): Promise<Employee> {
-    return this.repository.findOneBy({ id: employeeId });
+    return this.repository.findOne({
+      where: { id: employeeId },
+      relations: { address: true },
+    });
   }
 
   async updateOneById(
     employeeId: number,
     employeeData: Employee
   ): Promise<Employee> {
-    await this.repository.update({ id: employeeId }, employeeData);
+    console.log(employeeData);
+    await this.repository.save({ id: employeeId, ...employeeData });
     return this.fineOneById(employeeId);
   }
 
   async deleteOneById(employeeId: number): Promise<void> {
     await this.repository.delete({ id: employeeId });
+  }
+
+  async deleteCascadingOneById(employeeId: number): Promise<void> {
+    const employee = await this.fineOneById(employeeId);
+    if (employee) {
+      await this.repository.remove(employee);
+    }
   }
 }

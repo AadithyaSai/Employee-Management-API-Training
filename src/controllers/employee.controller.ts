@@ -1,5 +1,11 @@
-import { Request, Response, Router } from "express";
+import { Request, Response, Router, NextFunction } from "express";
 import EmployeeService from "../services/employee.service";
+import Address from "../entities/address.entity";
+import HttpException from "../exception/httpException";
+import { isEmail } from "../validators/emailValidator";
+import { CreateEmployeeDto } from "../dto/create-employee.dto";
+import { validate } from "class-validator";
+import { plainToInstance } from "class-transformer";
 
 export default class EmployeeController {
   constructor(
@@ -13,14 +19,25 @@ export default class EmployeeController {
     router.delete("/:id", this.deleteEmployee.bind(this));
   }
 
-  async createEmployee(req: Request, res: Response) {
-    const { name, email } = req.body;
-    const savedEmployee = await this.employeeService.createEmployee(
-      email,
-      name
-    );
+  async createEmployee(req: Request, res: Response, next: NextFunction) {
+    try {
+      const createEmployeeDto = plainToInstance(CreateEmployeeDto, req.body);
+      const errors = await validate(createEmployeeDto);
+      if (errors.length > 0) {
+        console.log(JSON.stringify(errors));
+        throw new HttpException(400, JSON.stringify(errors));
+      }
+      const savedEmployee = await this.employeeService.createEmployee(
+        createEmployeeDto.email,
+        createEmployeeDto.name,
+        createEmployeeDto.age,
+        createEmployeeDto.address
+      );
 
-    res.status(201).send(savedEmployee);
+      res.status(201).send(savedEmployee);
+    } catch (err) {
+      next(err);
+    }
   }
 
   async getAllEmployees(req: Request, res: Response) {
@@ -29,20 +46,36 @@ export default class EmployeeController {
     res.status(200).send(employees);
   }
 
-  async getEmployeeById(req: Request, res: Response) {
-    const employeeId = parseInt(req.params.id);
-    const employee = await this.employeeService.getEmployeeById(employeeId);
+  async getEmployeeById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const employeeId = parseInt(req.params.id);
+      const employee = await this.employeeService.getEmployeeById(employeeId);
 
-    res.status(200).send(employee);
+      if (!employee) {
+        throw new HttpException(404, "Employee not found");
+      }
+
+      res.status(200).send(employee);
+    } catch (err) {
+      next(err);
+    }
   }
 
   async updateEmployee(req: Request, res: Response) {
     const employeeId = parseInt(req.params.id);
-    const { name, email } = req.body;
+    const { name, email, age, line1, pincode } = req.body;
+    let address: Address;
+    if (line1 && pincode) {
+      address = new Address();
+      address.line1 = line1;
+      address.pincode = pincode ? parseInt(pincode) : undefined;
+    }
     const updatedEmployee = await this.employeeService.updateEmployeeById(
       employeeId,
       email,
-      name
+      name,
+      parseInt(age),
+      address
     );
 
     if (updatedEmployee) res.status(200).send(updatedEmployee);
