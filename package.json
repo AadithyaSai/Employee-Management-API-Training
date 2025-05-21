@@ -24,6 +24,8 @@
   },
   "homepage": "https://github.com/AadithyaSai/Employee-Management-API-Training#readme",
   "dependencies": {
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
     "express": "^5.1.0",
     "pg": "^8.16.0",
     "reflect-metadata": "^0.2.2",
