@@ -9,6 +9,8 @@ import {
 @Entity()
 export default class AbstractEntity {
   @PrimaryGeneratedColumn()
+  id: number;
+
   @CreateDateColumn()
   createdAt: Date;
 
