@@ -39,7 +39,7 @@ export default class EmployeeRepository {
   async deleteCascadingOneById(employeeId: number): Promise<void> {
     const employee = await this.fineOneById(employeeId);
     if (employee) {
-      await this.repository.remove(employee);
+      await this.repository.softRemove(employee);
     }
   }
 }
