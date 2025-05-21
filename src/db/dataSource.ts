@@ -14,10 +14,11 @@ const dataSource = new DataSource({
     max: 5,
     min: 2,
   },
-  synchronize: true,
+  synchronize: false,
   logging: true,
   namingStrategy: new SnakeNamingStrategy(),
   entities: [Employee],
+  migrations: ["dist/db/migrations/*.js"],
 });
 
 export default dataSource;
