@@ -1,7 +1,7 @@
 import express from "express";
 
-import dataSource from "./dataSource";
-import employeeRouter from "./routers/employee_router";
+import dataSource from "./db/dataSource";
+import employeeRouter from "./routers/employee.route";
 import loggerMiddleware from "./middleware/loggerMiddleware";
 import processedTimeMiddleware from "./middleware/processedTimeMiddleware";
 
