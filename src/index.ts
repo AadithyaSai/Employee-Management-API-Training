@@ -4,6 +4,7 @@ import dataSource from "./db/dataSource";
 import employeeRouter from "./routers/employee.route";
 import loggerMiddleware from "./middleware/loggerMiddleware";
 import processedTimeMiddleware from "./middleware/processedTimeMiddleware";
+import errorHandlerMiddleware from "./middleware/errorHandlerMiddleware";
 
 const PORT = 3000;
 
@@ -20,6 +21,9 @@ server.use("/employees", employeeRouter);
 server.get("/", (req, res) => {
   res.status(200).send("Hello");
 });
+
+// Error Middleware
+server.use(errorHandlerMiddleware);
 
 (async () => {
   try {
