@@ -1,17 +1,8 @@
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
+import { Column, Entity } from "typeorm";
+import AbstractEntity from "./abstract.entity";
 
 @Entity()
-class Employee {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+class Employee extends AbstractEntity {
   @Column({ unique: true })
   email: string;
 
@@ -20,15 +11,6 @@ class Employee {
 
   @Column()
   age: number;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @DeleteDateColumn()
-  deletedTimeAt: Date;
 }
 
 export default Employee;
