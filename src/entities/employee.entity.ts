@@ -1,6 +1,7 @@
-import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 import AbstractEntity from "./abstract.entity";
 import Address from "./address.entity";
+import Department from "./department.entity";
 
 @Entity()
 class Employee extends AbstractEntity {
@@ -19,6 +20,9 @@ class Employee extends AbstractEntity {
   })
   @JoinColumn()
   address: Address;
+
+  @ManyToOne(() => Department, (department) => department.employee)
+  department: Department;
 }
 
 export default Employee;
