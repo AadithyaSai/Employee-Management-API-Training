@@ -5,17 +5,31 @@ import { CreateEmployeeDto } from "../dto/create-employee.dto";
 import { validate } from "class-validator";
 import { plainToInstance } from "class-transformer";
 import { UpdateEmployeeDto } from "../dto/update-employee.dto";
+import checkRole from "../middleware/authorization.middleware";
+import { EmployeeRoleEnum } from "../entities/employee.entity";
 
 export default class EmployeeController {
   constructor(
     private employeeService: EmployeeService,
     private router: Router
   ) {
-    router.get("/", this.getAllEmployees.bind(this));
-    router.get("/:id", this.getEmployeeById.bind(this));
-    router.post("/", this.createEmployee.bind(this));
-    router.put("/:id", this.updateEmployee.bind(this));
-    router.delete("/:id", this.deleteEmployee.bind(this));
+    this.router.get("/", this.getAllEmployees.bind(this));
+    this.router.get("/:id", this.getEmployeeById.bind(this));
+    this.router.post(
+      "/",
+      checkRole(EmployeeRoleEnum.HR),
+      this.createEmployee.bind(this)
+    );
+    this.router.put(
+      "/:id",
+      checkRole(EmployeeRoleEnum.HR),
+      this.updateEmployee.bind(this)
+    );
+    this.router.delete(
+      "/:id",
+      checkRole(EmployeeRoleEnum.HR),
+      this.deleteEmployee.bind(this)
+    );
   }
 
   async createEmployee(req: Request, res: Response, next: NextFunction) {
@@ -28,8 +42,10 @@ export default class EmployeeController {
       }
       const savedEmployee = await this.employeeService.createEmployee(
         createEmployeeDto.email,
+        createEmployeeDto.password,
         createEmployeeDto.name,
         createEmployeeDto.age,
+        createEmployeeDto.roles,
         createEmployeeDto.address
       );
 
@@ -76,8 +92,10 @@ export default class EmployeeController {
       const updatedEmployee = await this.employeeService.updateEmployeeById(
         employeeId,
         updateEmployeeDto.email,
+        updateEmployeeDto.password,
         updateEmployeeDto.name,
         updateEmployeeDto.age,
+        updateEmployeeDto.roles,
         updateEmployeeDto.address
       );
 

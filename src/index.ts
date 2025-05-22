@@ -2,13 +2,18 @@ import express from "express";
 
 import dataSource from "./db/dataSource";
 import employeeRouter from "./routers/employee.route";
-import loggerMiddleware from "./middleware/loggerMiddleware";
-import processedTimeMiddleware from "./middleware/processedTimeMiddleware";
-import errorHandlerMiddleware from "./middleware/errorHandlerMiddleware";
+import loggerMiddleware from "./middleware/logger.middleware";
+import processedTimeMiddleware from "./middleware/processedTime.middleware";
+import errorHandlerMiddleware from "./middleware/errorHandler.middleware";
+import authRouter from "./routers/auth.route";
+import authenticationMiddleware from "./middleware/authentication.middleware";
+import authorizationMiddleware from "./middleware/authorization.middleware";
+import { LoggerService } from "./services/logger.service";
 
 const PORT = 3000;
 
 const server = express();
+const logger = LoggerService.getInstance("index()");
 
 // Middleware
 server.use(loggerMiddleware);
@@ -16,7 +21,8 @@ server.use(processedTimeMiddleware);
 server.use(express.json());
 
 // Routes
-server.use("/employees", employeeRouter);
+server.use("/auth", authRouter);
+server.use("/employees", authenticationMiddleware, employeeRouter);
 
 server.get("/", (req, res) => {
   res.status(200).send("Hello");
@@ -28,12 +34,12 @@ server.use(errorHandlerMiddleware);
 (async () => {
   try {
     await dataSource.initialize();
-    console.log("Connected to db");
-  } catch {
-    console.error("Failed to connect");
+    logger.info("Connected to db");
+    server.listen(PORT, () => {
+      logger.info("Server listening to 3000");
+    });
+  } catch (error) {
+    logger.error(`Failed to connect to db - ${error.message}`);
     process.exit(0);
   }
-  server.listen(3000, () => {
-    console.log("server listening to 3000");
-  });
 })();

@@ -19,8 +19,12 @@ export default class EmployeeRepository {
   async fineOneById(employeeId: number): Promise<Employee> {
     return this.repository.findOne({
       where: { id: employeeId },
-      relations: { address: true },
+      relations: { address: true, department: true },
     });
+  }
+
+  async findOneByEmail(email: string): Promise<Employee> {
+    return this.repository.findOneBy({ email });
   }
 
   async updateOneById(
@@ -28,8 +32,10 @@ export default class EmployeeRepository {
     employeeData: Employee
   ): Promise<Employee> {
     console.log(employeeData);
-    await this.repository.save({ id: employeeId, ...employeeData });
-    return this.fineOneById(employeeId);
+
+    const employee = await this.fineOneById(employeeId);
+    this.repository.merge(employee, employeeData);
+    return await this.repository.save(employee);
   }
 
   async deleteOneById(employeeId: number): Promise<void> {

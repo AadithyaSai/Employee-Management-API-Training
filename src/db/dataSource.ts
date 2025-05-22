@@ -1,16 +1,15 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
-import Employee from "../entities/employee.entity";
-import Address from "../entities/address.entity";
+import "dotenv/config";
 
 const dataSource = new DataSource({
   type: "postgres",
-  host: "localhost",
-  username: "postgres",
-  password: "postgres",
-  port: 5432,
-  database: "training",
+  host: process.env.DB_HOST,
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  port: Number(process.env.DB_PORT),
+  database: process.env.DB_NAME,
   extra: {
     max: 5,
     min: 2,
