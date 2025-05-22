@@ -1,8 +1,6 @@
 import { Request, Response, Router, NextFunction } from "express";
 import EmployeeService from "../services/employee.service";
-import Address from "../entities/address.entity";
 import HttpException from "../exception/httpException";
-import { isEmail } from "../validators/emailValidator";
 import { CreateEmployeeDto } from "../dto/create-employee.dto";
 import { validate } from "class-validator";
 import { plainToInstance } from "class-transformer";
