@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 
-const processedTimeMiddleware = (
+function processedTimeMiddleware(
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+) {
   const startTime = new Date();
   res.end = (function (_super) {
     return function (chunk?: any, encodingOrCb?: any, cb?: any) {
@@ -16,6 +16,6 @@ const processedTimeMiddleware = (
   })(res.end); // replaced end with a closure that sets header before invoking end
 
   next();
-};
+}
 
 export default processedTimeMiddleware;
