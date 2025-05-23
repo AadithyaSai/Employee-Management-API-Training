@@ -85,7 +85,6 @@ export default class DepartmentController {
       );
       const errors = await validate(createDepartmentDto);
       if (errors.length > 0) {
-        console.log(JSON.stringify(errors));
         throw new HttpException(400, JSON.stringify(errors));
       }
       const savedDepartment = await this.departmentService.createDepartment(
@@ -121,7 +120,6 @@ export default class DepartmentController {
       );
       const errors = await validate(updateDepartmentDto);
       if (errors.length > 0) {
-        console.log(JSON.stringify(errors));
         throw new HttpException(400, JSON.stringify(errors));
       }
       const savedDepartment = await this.departmentService.updateDepartment(
