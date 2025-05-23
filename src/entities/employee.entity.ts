@@ -8,6 +8,7 @@ export enum EmployeeRoleEnum {
   UX = "UX",
   DEVELOPER = "DEVELOPER",
   HR = "HR",
+  ADMIN = "ADMIN",
 }
 
 export enum EmployeeStatusEnum {
