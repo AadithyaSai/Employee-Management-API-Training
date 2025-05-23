@@ -4,6 +4,7 @@ import { LoggerService } from "./logger.service";
 import { instanceToPlain, plainToInstance } from "class-transformer";
 import { CreateEmployeeDto } from "../dto/create-employee.dto";
 import { UpdateEmployeeDto } from "../dto/update-employee.dto";
+import { hash } from "bcrypt";
 
 export default class EmployeeService {
   private logger = LoggerService.getInstance("EmployeeService()");
@@ -11,6 +12,7 @@ export default class EmployeeService {
 
   async createEmployee(employee: CreateEmployeeDto): Promise<Employee> {
     const newEmployee = plainToInstance(Employee, instanceToPlain(employee));
+    newEmployee.password = await hash(newEmployee.password, 10);
     const result = await this.repo.create(newEmployee);
     this.logger.info(`Created new employee with email:${result.email}`);
     return result;
@@ -30,6 +32,9 @@ export default class EmployeeService {
 
   async updateEmployeeById(employeeId: number, employee: UpdateEmployeeDto) {
     const employeeData = plainToInstance(Employee, instanceToPlain(employee));
+    employeeData.password = employeeData
+      ? await hash(employeeData.password, 10)
+      : null;
 
     const result = await this.repo.updateOneById(employeeId, employeeData);
     this.logger.info(`Updated employee with email ${result.email}`);
