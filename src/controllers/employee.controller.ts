@@ -5,8 +5,9 @@ import { CreateEmployeeDto } from "../dto/create-employee.dto";
 import { validate } from "class-validator";
 import { plainToInstance } from "class-transformer";
 import { UpdateEmployeeDto } from "../dto/update-employee.dto";
-import checkRole from "../middleware/authorization.middleware";
-import { EmployeeRoleEnum } from "../entities/employee.entity";
+import checkRole, {
+  permissionsEnum,
+} from "../middleware/authorization.middleware";
 import { hash } from "bcrypt";
 
 export default class EmployeeController {
@@ -14,21 +15,29 @@ export default class EmployeeController {
     private employeeService: EmployeeService,
     private router: Router
   ) {
-    this.router.get("/", this.getAllEmployees.bind(this));
-    this.router.get("/:id", this.getEmployeeById.bind(this));
+    this.router.get(
+      "/",
+      checkRole([permissionsEnum.ReadEmployee]),
+      this.getAllEmployees.bind(this)
+    );
+    this.router.get(
+      "/:id",
+      checkRole([permissionsEnum.ReadEmployee]),
+      this.getEmployeeById.bind(this)
+    );
     this.router.post(
       "/",
-      checkRole(EmployeeRoleEnum.HR),
+      checkRole([permissionsEnum.WriteEmployee]),
       this.createEmployee.bind(this)
     );
     this.router.put(
       "/:id",
-      checkRole(EmployeeRoleEnum.HR),
+      checkRole([permissionsEnum.WriteEmployee]),
       this.updateEmployee.bind(this)
     );
     this.router.delete(
       "/:id",
-      checkRole(EmployeeRoleEnum.HR),
+      checkRole([permissionsEnum.DeleteEmployee]),
       this.deleteEmployee.bind(this)
     );
   }
@@ -36,7 +45,6 @@ export default class EmployeeController {
   async createEmployee(req: Request, res: Response, next: NextFunction) {
     try {
       const createEmployeeDto = plainToInstance(CreateEmployeeDto, req.body);
-      req.body.password = await hash(req.body.password, 10);
       const errors = await validate(createEmployeeDto);
       if (errors.length > 0) {
         console.log(JSON.stringify(errors));

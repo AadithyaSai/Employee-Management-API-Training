@@ -23,7 +23,7 @@ server.use(express.json());
 // Routes
 server.use("/auth", authRouter);
 server.use("/employees", authenticationMiddleware, employeeRouter);
-server.use("/departments", departmentRouter);
+server.use("/departments", authenticationMiddleware, departmentRouter);
 
 server.get("/", (req, res) => {
   res.status(200).send("Hello");

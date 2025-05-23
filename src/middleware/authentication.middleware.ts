@@ -24,7 +24,6 @@ function authenticationMiddleware(
     if (!token) throw new HttpException(401, "Not authorized");
     const payload = jwt.verify(token, process.env.JWT_SECRET);
     req.user = payload as JwtPayloadDto;
-    console.log(req.user);
   } catch (error) {
     throw new HttpException(401, "Invalid or expired token");
   }

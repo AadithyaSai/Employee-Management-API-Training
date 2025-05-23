@@ -5,22 +5,50 @@ import { validate } from "class-validator";
 import CreateDepartmentDto from "../dto/create-department.dto";
 import HttpException from "../exception/httpException";
 import UpdateDepartmentDto from "../dto/update-department.dto";
+import checkRole, {
+  permissionsEnum,
+} from "../middleware/authorization.middleware";
 
 export default class DepartmentController {
   constructor(
     private departmentService: DepartmentService,
     private router: Router
   ) {
-    this.router.post("/", this.createDepartment.bind(this));
-    this.router.get("/", this.getDepartments.bind(this));
-    this.router.put("/:id", this.updateDepartment.bind(this));
-    this.router.delete("/:id", this.deleteDepartment.bind(this));
-    this.router.post("/:id/employees/:empid", this.addEmployee.bind(this));
+    this.router.post(
+      "/",
+      checkRole([permissionsEnum.WriteDepartment]),
+      this.createDepartment.bind(this)
+    );
+    this.router.get(
+      "/",
+      checkRole([permissionsEnum.ReadDepartment]),
+      this.getDepartments.bind(this)
+    );
+    this.router.put(
+      "/:id",
+      checkRole([permissionsEnum.ReadDepartment, permissionsEnum.ReadEmployee]),
+      this.updateDepartment.bind(this)
+    );
+    this.router.delete(
+      "/:id",
+      checkRole([permissionsEnum.DeleteDepartment]),
+      this.deleteDepartment.bind(this)
+    );
+    this.router.post(
+      "/:id/employees/:empid",
+      checkRole([permissionsEnum.WriteEmployee]),
+      this.addEmployee.bind(this)
+    );
     this.router.get(
       "/:id/employees",
+      checkRole([permissionsEnum.ReadDepartment, permissionsEnum.ReadEmployee]),
       this.getEmployeesFromDepartment.bind(this)
     );
-    this.router.delete("/:id/employees/:empid", this.deleteEmployee.bind(this));
+    this.router.delete(
+      "/:id/employees/:empid",
+      checkRole([permissionsEnum.DeleteDepartment]),
+      this.deleteEmployee.bind(this)
+    );
   }
 
   async getDepartments(req: Request, res: Response, next: NextFunction) {
@@ -106,7 +134,7 @@ export default class DepartmentController {
       next(error);
     }
   }
- 
+
   async deleteDepartment(req: Request, res: Response, next: NextFunction) {
     try {
       const deptId = Number(req.params.id);
