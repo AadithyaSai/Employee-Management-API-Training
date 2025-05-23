@@ -4,6 +4,7 @@ import EmployeeService from "./employee.service";
 import JwtPayloadDto from "../dto/jwt-payload.dto";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
+import { StringValue } from "ms";
 
 export default class AuthService {
   constructor(private employeeService: EmployeeService) {}
@@ -26,7 +27,7 @@ export default class AuthService {
     };
 
     return jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: Number(process.env.JWT_VALIDITY),
+      expiresIn: process.env.JWT_VALIDITY as StringValue,
     });
   }
 }
