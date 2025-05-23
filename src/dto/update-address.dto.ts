@@ -6,6 +6,14 @@ export class UpdateAddressDto {
   line1: string;
 
   @IsOptional()
+  @IsString()
+  line2: string;
+
+  @IsOptional()
+  @IsString()
+  houseNo: string;
+
+  @IsOptional()
   @IsNumber()
   pincode: number;
 }

@@ -1,6 +1,8 @@
 import {
+  IsDate,
   IsEmail,
   IsEnum,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
@@ -8,7 +10,10 @@ import {
 } from "class-validator";
 import { UpdateAddressDto } from "./update-address.dto";
 import { Type } from "class-transformer";
-import { EmployeeRoleEnum } from "../entities/employee.entity";
+import {
+  EmployeeRoleEnum,
+  EmployeeStatusEnum,
+} from "../entities/employee.entity";
 
 export class UpdateEmployeeDto {
   @IsOptional()
@@ -30,6 +35,22 @@ export class UpdateEmployeeDto {
   @IsOptional()
   @IsEnum(EmployeeRoleEnum)
   roles: EmployeeRoleEnum;
+
+  @IsOptional()
+  @IsEnum(EmployeeStatusEnum)
+  status: EmployeeStatusEnum;
+
+  @IsOptional()
+  @IsString()
+  employeeId: string;
+
+  @IsOptional()
+  @IsDate()
+  dateOfJoining: Date;
+
+  @IsOptional()
+  @IsNumber()
+  experience: number;
 
   @IsOptional()
   @ValidateNested()

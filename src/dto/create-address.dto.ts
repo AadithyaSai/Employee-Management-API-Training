@@ -6,6 +6,14 @@ export class CreateAddressDto {
   line1: string;
 
   @IsNotEmpty()
+  @IsString()
+  line2: string;
+
+  @IsNotEmpty()
+  @IsString()
+  houseNo: string;
+
+  @IsNotEmpty()
   @IsNumber()
   pincode: number;
 }

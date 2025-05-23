@@ -41,12 +41,7 @@ export default class EmployeeController {
         throw new HttpException(400, JSON.stringify(errors));
       }
       const savedEmployee = await this.employeeService.createEmployee(
-        createEmployeeDto.email,
-        createEmployeeDto.password,
-        createEmployeeDto.name,
-        createEmployeeDto.age,
-        createEmployeeDto.roles,
-        createEmployeeDto.address
+        createEmployeeDto
       );
 
       res.status(201).send(savedEmployee);
@@ -91,12 +86,7 @@ export default class EmployeeController {
       }
       const updatedEmployee = await this.employeeService.updateEmployeeById(
         employeeId,
-        updateEmployeeDto.email,
-        updateEmployeeDto.password,
-        updateEmployeeDto.name,
-        updateEmployeeDto.age,
-        updateEmployeeDto.roles,
-        updateEmployeeDto.address
+        updateEmployeeDto
       );
 
       res.status(200).send(updatedEmployee);

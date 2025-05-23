@@ -6,8 +6,14 @@ import Department from "./department.entity";
 export enum EmployeeRoleEnum {
   UI = "UI",
   UX = "UX",
-  Developer = "Developer",
+  DEVELOPER = "DEVELOPER",
   HR = "HR",
+}
+
+export enum EmployeeStatusEnum {
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+  PROBATION = "PROBATION",
 }
 
 @Entity()
@@ -27,9 +33,29 @@ class Employee extends AbstractEntity {
   @Column({
     type: "enum",
     enum: EmployeeRoleEnum,
-    default: EmployeeRoleEnum.Developer,
+    default: EmployeeRoleEnum.DEVELOPER,
   })
   roles: EmployeeRoleEnum;
+
+  @Column({
+    type: "enum",
+    enum: EmployeeStatusEnum,
+    default: EmployeeStatusEnum.PROBATION,
+  })
+  status: EmployeeRoleEnum;
+
+  @Column({
+    default: "NOW()",
+  })
+  dateOfJoining: Date;
+
+  @Column({})
+  experience: number;
+
+  @Column({
+    unique: true,
+  })
+  employeeId: string;
 
   @OneToOne(() => Address, (address) => address.employee, {
     cascade: true,

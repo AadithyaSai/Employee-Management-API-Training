@@ -1,32 +1,16 @@
-import { CreateAddressDto } from "../dto/create-address.dto";
-import { UpdateAddressDto } from "../dto/update-address.dto";
-import Address from "../entities/address.entity";
-import Employee, { EmployeeRoleEnum } from "../entities/employee.entity";
+import Employee from "../entities/employee.entity";
 import EmployeeRepository from "../repositories/employee.repository";
-import { hash } from "bcrypt";
 import { LoggerService } from "./logger.service";
+import { instanceToPlain, plainToInstance } from "class-transformer";
+import { CreateEmployeeDto } from "../dto/create-employee.dto";
+import { UpdateEmployeeDto } from "../dto/update-employee.dto";
 
 export default class EmployeeService {
   private logger = LoggerService.getInstance("EmployeeService()");
   constructor(private repo: EmployeeRepository) {}
 
-  async createEmployee(
-    email: string,
-    password: string,
-    name: string,
-    age: number,
-    roles: EmployeeRoleEnum,
-    address: CreateAddressDto
-  ): Promise<Employee> {
-    const newEmployee = new Employee();
-    newEmployee.email = email;
-    newEmployee.name = name;
-    newEmployee.password = await hash(password, 10);
-    newEmployee.age = age;
-    newEmployee.roles = roles;
-    newEmployee.address = new Address();
-    newEmployee.address.line1 = address.line1;
-    newEmployee.address.pincode = address.pincode;
+  async createEmployee(employee: CreateEmployeeDto): Promise<Employee> {
+    const newEmployee = plainToInstance(Employee, instanceToPlain(employee));
     return this.repo.create(newEmployee);
   }
 
@@ -42,26 +26,8 @@ export default class EmployeeService {
     return this.repo.findOneByEmail(email);
   }
 
-  async updateEmployeeById(
-    employeeId: number,
-    email?: string,
-    password?: string,
-    name?: string,
-    age?: number,
-    roles?: EmployeeRoleEnum,
-    address?: UpdateAddressDto
-  ) {
-    const employeeData = new Employee();
-    employeeData.name = name;
-    employeeData.email = email;
-    employeeData.password = password ? await hash(password, 10) : undefined;
-    employeeData.roles = roles;
-    employeeData.age = age;
-    if (address) {
-      employeeData.address = new Address();
-      employeeData.address.line1 = address.line1;
-      employeeData.address.pincode = address.pincode;
-    }
+  async updateEmployeeById(employeeId: number, employee: UpdateEmployeeDto) {
+    const employeeData = plainToInstance(Employee, instanceToPlain(employee));
 
     return this.repo.updateOneById(employeeId, employeeData);
   }
