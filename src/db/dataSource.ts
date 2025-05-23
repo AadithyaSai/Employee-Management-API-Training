@@ -15,7 +15,7 @@ const dataSource = new DataSource({
     min: 2,
   },
   synchronize: false,
-  logging: true,
+  // logging: true,
   namingStrategy: new SnakeNamingStrategy(),
   entities: ["dist/entities/*.js"],
   migrations: ["dist/db/migrations/*.js"],
