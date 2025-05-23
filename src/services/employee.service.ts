@@ -11,7 +11,9 @@ export default class EmployeeService {
 
   async createEmployee(employee: CreateEmployeeDto): Promise<Employee> {
     const newEmployee = plainToInstance(Employee, instanceToPlain(employee));
-    return this.repo.create(newEmployee);
+    const result = await this.repo.create(newEmployee);
+    this.logger.info(`Created new employee with email:${result.email}`);
+    return result;
   }
 
   async getAllEmployees(): Promise<Employee[]> {
@@ -29,10 +31,13 @@ export default class EmployeeService {
   async updateEmployeeById(employeeId: number, employee: UpdateEmployeeDto) {
     const employeeData = plainToInstance(Employee, instanceToPlain(employee));
 
-    return this.repo.updateOneById(employeeId, employeeData);
+    const result = await this.repo.updateOneById(employeeId, employeeData);
+    this.logger.info(`Updated employee with email ${result.email}`);
+    return result;
   }
 
   async deleteEmployeeById(employeeId: number): Promise<void> {
-    this.repo.deleteCascadingOneById(employeeId);
+    await this.repo.deleteCascadingOneById(employeeId);
+    this.logger.info(`Deleted employee`);
   }
 }

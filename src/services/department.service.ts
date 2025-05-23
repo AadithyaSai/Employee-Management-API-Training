@@ -3,8 +3,10 @@ import CreateDepartmentDto from "../dto/create-department.dto";
 import UpdateDepartmentDto from "../dto/update-department.dto";
 import Department from "../entities/department.entity";
 import departmentRepository from "../repositories/department.repository";
+import { LoggerService } from "./logger.service";
 
 export default class DepartmentService {
+  private logger = LoggerService.getInstance("DepartmentService");
   constructor(private repo: departmentRepository) {}
 
   async getDepartments() {
@@ -17,11 +19,16 @@ export default class DepartmentService {
 
   async createDepartment(department: CreateDepartmentDto) {
     const newDept = plainToInstance(Department, instanceToPlain(department));
-    return this.repo.createDepartment(newDept);
+    const result = await this.repo.createDepartment(newDept);
+    this.logger.info(`Created department ${department.name}`);
+    return result;
   }
 
   async addEmployee(departmentId: number, employeeId: number) {
-    return this.repo.addEmployee(departmentId, employeeId);
+    const result = await this.repo.addEmployee(departmentId, employeeId);
+    this.logger.info(
+      `Employee with email ${result.email} added to department ${result.department.name}`
+    );
   }
 
   async updateDepartment(
@@ -29,14 +36,18 @@ export default class DepartmentService {
     department: UpdateDepartmentDto
   ) {
     const newDept = plainToInstance(Department, instanceToPlain(department));
-    return this.repo.updateDepartment(departmentId, newDept);
+    const result = await this.repo.updateDepartment(departmentId, newDept);
+    this.logger.info(`Updated department ${department.name}`);
+    return result;
   }
 
   async deleteDepartment(departmentId: number) {
     await this.repo.deleteDepartment(departmentId);
+    this.logger.info(`Deleted department`);
   }
 
   async deleteEmployee(departmentId: number, employeeId: number) {
+    this.logger.info(`Removed employee from department`);
     await this.repo.deleteEmployee(departmentId, employeeId);
   }
 }
