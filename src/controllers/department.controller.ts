@@ -77,7 +77,8 @@ export default class DepartmentController {
 
       if (Number.isNaN(empId)) throw new HttpException(400, "Bad request");
 
-      return await this.departmentService.addEmployee(deptId, empId);
+      const result = await this.departmentService.addEmployee(deptId, empId);
+      res.status(200).send(result);
     } catch (error) {
       next(error);
     }
@@ -105,7 +106,7 @@ export default class DepartmentController {
       next(error);
     }
   }
-
+ 
   async deleteDepartment(req: Request, res: Response, next: NextFunction) {
     try {
       const deptId = Number(req.params.id);

@@ -44,7 +44,7 @@ export default class departmentRepository {
     }
 
     employee.department = department;
-    return this.employeeRepository.updateOneById(employeeId, employee);
+    return await this.employeeRepository.updateOneById(employeeId, employee);
   }
 
   async updateDepartment(departmentId: number, department: Department) {

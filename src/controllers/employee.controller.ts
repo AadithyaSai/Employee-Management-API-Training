@@ -7,6 +7,7 @@ import { plainToInstance } from "class-transformer";
 import { UpdateEmployeeDto } from "../dto/update-employee.dto";
 import checkRole from "../middleware/authorization.middleware";
 import { EmployeeRoleEnum } from "../entities/employee.entity";
+import { hash } from "bcrypt";
 
 export default class EmployeeController {
   constructor(
@@ -35,11 +36,13 @@ export default class EmployeeController {
   async createEmployee(req: Request, res: Response, next: NextFunction) {
     try {
       const createEmployeeDto = plainToInstance(CreateEmployeeDto, req.body);
+      req.body.password = await hash(req.body.password, 10);
       const errors = await validate(createEmployeeDto);
       if (errors.length > 0) {
         console.log(JSON.stringify(errors));
         throw new HttpException(400, JSON.stringify(errors));
       }
+      createEmployeeDto;
       const savedEmployee = await this.employeeService.createEmployee(
         createEmployeeDto
       );
