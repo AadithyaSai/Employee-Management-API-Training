@@ -8,7 +8,6 @@ import { UpdateEmployeeDto } from "../dto/update-employee.dto";
 import checkRole, {
   permissionsEnum,
 } from "../middleware/authorization.middleware";
-import { hash } from "bcrypt";
 
 export default class EmployeeController {
   constructor(
@@ -61,10 +60,14 @@ export default class EmployeeController {
     }
   }
 
-  async getAllEmployees(req: Request, res: Response) {
-    const employees = await this.employeeService.getAllEmployees();
+  async getAllEmployees(req: Request, res: Response, next: NextFunction) {
+    try {
+      const employees = await this.employeeService.getAllEmployees();
 
-    res.status(200).send(employees);
+      res.status(200).send(employees);
+    } catch (error) {
+      next(error);
+    }
   }
 
   async getEmployeeById(req: Request, res: Response, next: NextFunction) {
@@ -106,9 +109,13 @@ export default class EmployeeController {
     }
   }
 
-  async deleteEmployee(req: Request, res: Response) {
-    const employeeId = parseInt(req.params.id);
-    await this.employeeService.deleteEmployeeById(employeeId);
-    res.status(204).send();
+  async deleteEmployee(req: Request, res: Response, next: NextFunction) {
+    try {
+      const employeeId = parseInt(req.params.id);
+      await this.employeeService.deleteEmployeeById(employeeId);
+      res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
   }
 }

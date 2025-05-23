@@ -1,5 +1,6 @@
 import { Repository } from "typeorm";
 import Employee from "../entities/employee.entity";
+import HttpException from "../exception/httpException";
 
 export default class EmployeeRepository {
   constructor(private repository: Repository<Employee>) {}
@@ -18,14 +19,18 @@ export default class EmployeeRepository {
   }
 
   async fineOneById(employeeId: number): Promise<Employee> {
-    return this.repository.findOne({
+    const result = this.repository.findOne({
       where: { id: employeeId },
       relations: { address: true, department: true },
     });
+    if (!result) throw new HttpException(404, "No such employee");
+    return result;
   }
 
   async findOneByEmail(email: string): Promise<Employee> {
-    return this.repository.findOneBy({ email });
+    const result = this.repository.findOneBy({ email });
+    if (!result) throw new HttpException(404, "No such employee");
+    return result;
   }
 
   async updateOneById(
@@ -33,22 +38,22 @@ export default class EmployeeRepository {
     employeeData: Employee
   ): Promise<Employee> {
     const employee = await this.fineOneById(employeeId);
+    if (!employee) throw new HttpException(404, "No such employee");
     this.repository.merge(employee, employeeData);
     return await this.repository.save(employee);
   }
 
   async deleteDepartment(employeeId: number): Promise<void> {
-    await this.repository.update({ id: employeeId }, { department: null });
-  }
-
-  async deleteOneById(employeeId: number): Promise<void> {
-    await this.repository.delete({ id: employeeId });
+    const result = await this.repository.update(
+      { id: employeeId },
+      { department: null }
+    );
+    if (result.affected === 0) throw new HttpException(404, "No such employee");
   }
 
   async deleteCascadingOneById(employeeId: number): Promise<void> {
     const employee = await this.fineOneById(employeeId);
-    if (employee) {
-      await this.repository.softRemove(employee);
-    }
+    if (!employee) throw new HttpException(404, "No such employee");
+    await this.repository.softRemove(employee);
   }
 }
