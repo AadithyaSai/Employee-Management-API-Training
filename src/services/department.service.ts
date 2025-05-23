@@ -1,9 +1,4 @@
-import {
-  instanceToInstance,
-  instanceToPlain,
-  plainToClass,
-  plainToInstance,
-} from "class-transformer";
+import { instanceToPlain, plainToInstance } from "class-transformer";
 import CreateDepartmentDto from "../dto/create-department.dto";
 import UpdateDepartmentDto from "../dto/update-department.dto";
 import Department from "../entities/department.entity";
@@ -25,8 +20,8 @@ export default class DepartmentService {
     return this.repo.createDepartment(newDept);
   }
 
-  async addEmployee(employeeId: number) {
-    return this.repo.addEmployee(employeeId);
+  async addEmployee(departmentId: number, employeeId: number) {
+    return this.repo.addEmployee(departmentId, employeeId);
   }
 
   async updateDepartment(
@@ -38,10 +33,10 @@ export default class DepartmentService {
   }
 
   async deleteDepartment(departmentId: number) {
-    this.repo.deleteDepartment(departmentId);
+    await this.repo.deleteDepartment(departmentId);
   }
 
   async deleteEmployee(departmentId: number, employeeId: number) {
-    this.repo.deleteEmployee(departmentId, employeeId);
+    await this.repo.deleteEmployee(departmentId, employeeId);
   }
 }

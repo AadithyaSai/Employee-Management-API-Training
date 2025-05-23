@@ -16,5 +16,5 @@ const employeeController = new EmployeeController(
   employeeRouter
 );
 
-export { employeeService };
+export { employeeService, employeeRepository };
 export default employeeRouter;

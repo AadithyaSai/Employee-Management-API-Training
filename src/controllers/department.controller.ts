@@ -6,18 +6,21 @@ import CreateDepartmentDto from "../dto/create-department.dto";
 import HttpException from "../exception/httpException";
 import UpdateDepartmentDto from "../dto/update-department.dto";
 
-class DepartmentController {
+export default class DepartmentController {
   constructor(
     private departmentService: DepartmentService,
     private router: Router
   ) {
-    this.router.post("/");
-    this.router.get("/");
-    this.router.get("/:id");
-    this.router.post("/:id");
-    this.router.put("/:id");
-    this.router.delete("/:id");
-    this.router.delete("/:id/:empid");
+    this.router.post("/", this.createDepartment.bind(this));
+    this.router.get("/", this.getDepartments.bind(this));
+    this.router.put("/:id", this.updateDepartment.bind(this));
+    this.router.delete("/:id", this.deleteDepartment.bind(this));
+    this.router.post("/:id/employees/:empid", this.addEmployee.bind(this));
+    this.router.get(
+      "/:id/employees",
+      this.getEmployeesFromDepartment.bind(this)
+    );
+    this.router.delete("/:id/employees/:empid", this.deleteEmployee.bind(this));
   }
 
   async getDepartments(req: Request, res: Response, next: NextFunction) {
@@ -37,8 +40,9 @@ class DepartmentController {
   ) {
     try {
       const deptId = parseInt(req.params.id);
-      const employees =
-        this.departmentService.getEmployeesFromDepartment(deptId);
+      const employees = await this.departmentService.getEmployeesFromDepartment(
+        deptId
+      );
       res.status(200).send(employees);
     } catch (error) {
       next(error);
@@ -68,8 +72,12 @@ class DepartmentController {
 
   async addEmployee(req: Request, res: Response, next: NextFunction) {
     try {
+      const deptId = parseInt(req.params.id);
       const empId = parseInt(req.params.empid);
-      return await this.departmentService.addEmployee(empId);
+
+      if (Number.isNaN(empId)) throw new HttpException(400, "Bad request");
+
+      return await this.departmentService.addEmployee(deptId, empId);
     } catch (error) {
       next(error);
     }
@@ -98,14 +106,22 @@ class DepartmentController {
     }
   }
 
-  async deleteEmployee(req: Request, res: Response, next: NextFunction) {
+  async deleteDepartment(req: Request, res: Response, next: NextFunction) {
     try {
+      const deptId = Number(req.params.id);
+      await this.departmentService.deleteDepartment(deptId);
+      res.status(204).send();
     } catch (error) {
       next(error);
     }
   }
 
-  async deleteDepartment(req: Request, res: Response, next: NextFunction) {
+  async deleteEmployee(req: Request, res: Response, next: NextFunction) {
+    const deptId = Number(req.params.id);
+    const empId = Number(req.params.empid);
+
+    await this.departmentService.deleteEmployee(deptId, empId);
+    res.status(204).send();
     try {
     } catch (error) {
       next(error);

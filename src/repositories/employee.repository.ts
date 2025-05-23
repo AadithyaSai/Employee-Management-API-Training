@@ -12,6 +12,7 @@ export default class EmployeeRepository {
     return this.repository.find({
       relations: {
         address: true,
+        department: true,
       },
     });
   }
@@ -31,11 +32,13 @@ export default class EmployeeRepository {
     employeeId: number,
     employeeData: Employee
   ): Promise<Employee> {
-    console.log(employeeData);
-
     const employee = await this.fineOneById(employeeId);
     this.repository.merge(employee, employeeData);
     return await this.repository.save(employee);
+  }
+
+  async deleteDepartment(employeeId: number): Promise<void> {
+    await this.repository.update({ id: employeeId }, { department: null });
   }
 
   async deleteOneById(employeeId: number): Promise<void> {

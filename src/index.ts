@@ -7,8 +7,8 @@ import processedTimeMiddleware from "./middleware/processedTime.middleware";
 import errorHandlerMiddleware from "./middleware/errorHandler.middleware";
 import authRouter from "./routers/auth.route";
 import authenticationMiddleware from "./middleware/authentication.middleware";
-import authorizationMiddleware from "./middleware/authorization.middleware";
 import { LoggerService } from "./services/logger.service";
+import departmentRouter from "./routers/department.route";
 
 const PORT = 3000;
 
@@ -23,6 +23,7 @@ server.use(express.json());
 // Routes
 server.use("/auth", authRouter);
 server.use("/employees", authenticationMiddleware, employeeRouter);
+server.use("/departments", departmentRouter);
 
 server.get("/", (req, res) => {
   res.status(200).send("Hello");
