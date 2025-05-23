@@ -43,7 +43,7 @@ class Employee extends AbstractEntity {
     enum: EmployeeStatusEnum,
     default: EmployeeStatusEnum.PROBATION,
   })
-  status: EmployeeRoleEnum;
+  status: EmployeeStatusEnum;
 
   @Column({
     default: "NOW()",
