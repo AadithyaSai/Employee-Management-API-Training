@@ -35,7 +35,6 @@ export default class EmployeeService {
   }
 
   async getEmployeeById(employeeId: number): Promise<Employee> {
-    if (employeeId == 2) throw new Error();
     return this.repo.fineOneById(employeeId);
   }
 
