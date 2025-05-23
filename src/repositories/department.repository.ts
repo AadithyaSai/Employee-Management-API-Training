@@ -71,7 +71,7 @@ export default class departmentRepository {
 
     if (
       !employee ||
-      ~!employee.department ||
+      !employee.department ||
       employee.department.id != departmentId
     ) {
       throw new HttpException(404, "No such employee or department");
