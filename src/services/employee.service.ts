@@ -23,7 +23,7 @@ export default class EmployeeService {
   }
 
   async getEmployeeById(employeeId: number): Promise<Employee> {
-    return this.repo.fineOneById(employeeId);
+    return this.repo.findOneById(employeeId);
   }
 
   async getEmployeeByEmail(email: string): Promise<Employee> {

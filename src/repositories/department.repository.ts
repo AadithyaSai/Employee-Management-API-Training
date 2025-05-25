@@ -38,7 +38,7 @@ export default class departmentRepository {
     if (!department) {
       throw new HttpException(404, "No such department");
     }
-    const employee = await this.employeeRepository.fineOneById(employeeId);
+    const employee = await this.employeeRepository.findOneById(employeeId);
     if (!employee) {
       throw new HttpException(404, "No such employee");
     }
@@ -67,7 +67,7 @@ export default class departmentRepository {
   }
 
   async deleteEmployee(departmentId: number, employeeId: number) {
-    const employee = await this.employeeRepository.fineOneById(employeeId);
+    const employee = await this.employeeRepository.findOneById(employeeId);
 
     if (
       !employee ||

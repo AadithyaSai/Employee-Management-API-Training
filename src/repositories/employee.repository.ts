@@ -18,7 +18,7 @@ export default class EmployeeRepository {
     });
   }
 
-  async fineOneById(employeeId: number): Promise<Employee> {
+  async findOneById(employeeId: number): Promise<Employee> {
     const result = this.repository.findOne({
       where: { id: employeeId },
       relations: { address: true, department: true },
@@ -37,7 +37,7 @@ export default class EmployeeRepository {
     employeeId: number,
     employeeData: Employee
   ): Promise<Employee> {
-    const employee = await this.fineOneById(employeeId);
+    const employee = await this.findOneById(employeeId);
     if (!employee) throw new HttpException(404, "No such employee");
     this.repository.merge(employee, employeeData);
     return await this.repository.save(employee);
@@ -52,7 +52,7 @@ export default class EmployeeRepository {
   }
 
   async deleteCascadingOneById(employeeId: number): Promise<void> {
-    const employee = await this.fineOneById(employeeId);
+    const employee = await this.findOneById(employeeId);
     if (!employee) throw new HttpException(404, "No such employee");
     await this.repository.softRemove(employee);
   }
