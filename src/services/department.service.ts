@@ -29,6 +29,7 @@ export default class DepartmentService {
     this.logger.info(
       `Employee with email ${result.email} added to department ${result.department.name}`
     );
+    return result;
   }
 
   async updateDepartment(
