@@ -32,9 +32,9 @@ export default class EmployeeService {
 
   async updateEmployeeById(employeeId: number, employee: UpdateEmployeeDto) {
     const employeeData = plainToInstance(Employee, instanceToPlain(employee));
-    employeeData.password = employeeData
+    employeeData.password = employeeData.password
       ? await hash(employeeData.password, 10)
-      : null;
+      : undefined;
 
     const result = await this.repo.updateOneById(employeeId, employeeData);
     this.logger.info(`Updated employee with email ${result.email}`);
