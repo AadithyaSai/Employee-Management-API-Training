@@ -138,7 +138,7 @@ describe("EmployeeService", () => {
 
       expect(employeeRepositoryMock.updateOneById).toHaveBeenCalled();
     });
-    it("called with valid employee id", async () => {
+    it("called with valid employee id with password", async () => {
       const id = 1;
       const updateDetails = {
         password: "password",
@@ -151,6 +151,23 @@ describe("EmployeeService", () => {
           password: expect.anything(),
           email: "email",
         } as Employee)
+        .mockReturnValue(mockEmployee);
+
+      const result = await employeeService.updateEmployeeById(
+        id,
+        updateDetails
+      );
+
+      expect(result).toStrictEqual(mockEmployee);
+      expect(employeeRepositoryMock.updateOneById).toHaveBeenCalled();
+    });
+    it("called with valid employee id without password", async () => {
+      const id = 1;
+      const updateDetails = {} as UpdateEmployeeDto;
+      const mockEmployee = new Employee();
+      mockEmployee.email = "email";
+      when(employeeRepositoryMock.updateOneById)
+        .calledWith(id, {} as Employee)
         .mockReturnValue(mockEmployee);
 
       const result = await employeeService.updateEmployeeById(
