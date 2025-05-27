@@ -57,7 +57,7 @@ describe("DepartmentService", () => {
     });
   });
 
-  describe("addEmployee", () => {
+  describe("addEmployeeToDepartment", () => {
     it("called with invalid dept id", async () => {
       const deptId = 1;
       const empId = 1;
@@ -65,16 +65,18 @@ describe("DepartmentService", () => {
         email: "email",
         department: { name: "some dept" },
       } as Employee;
-      when(departmentRepositoryMock.addEmployee)
+      when(departmentRepositoryMock.addEmployeeToDepartment)
         .calledWith(deptId, empId)
         .mockReturnValue(mockResult);
 
-      const result = await departmentService.addEmployee(deptId, empId);
-
-      expect(departmentRepositoryMock.addEmployee).toHaveBeenCalledWith(
+      const result = await departmentService.addEmployeeToDepartment(
         deptId,
         empId
       );
+
+      expect(
+        departmentRepositoryMock.addEmployeeToDepartment
+      ).toHaveBeenCalledWith(deptId, empId);
     });
     it("called with invalid emp id", async () => {
       const deptId = 1;
@@ -83,16 +85,18 @@ describe("DepartmentService", () => {
         email: "email",
         department: { name: "some dept" },
       } as Employee;
-      when(departmentRepositoryMock.addEmployee)
+      when(departmentRepositoryMock.addEmployeeToDepartment)
         .calledWith(deptId, empId)
         .mockReturnValue(mockResult);
 
-      const result = await departmentService.addEmployee(deptId, empId);
-
-      expect(departmentRepositoryMock.addEmployee).toHaveBeenCalledWith(
+      const result = await departmentService.addEmployeeToDepartment(
         deptId,
         empId
       );
+
+      expect(
+        departmentRepositoryMock.addEmployeeToDepartment
+      ).toHaveBeenCalledWith(deptId, empId);
     });
     it("called with valid ids", async () => {
       const deptId = 1;
@@ -101,17 +105,19 @@ describe("DepartmentService", () => {
         email: "email",
         department: { name: "some dept" },
       } as Employee;
-      when(departmentRepositoryMock.addEmployee)
+      when(departmentRepositoryMock.addEmployeeToDepartment)
         .calledWith(deptId, empId)
         .mockReturnValue(mockResult);
 
-      const result = await departmentService.addEmployee(deptId, empId);
-
-      expect(result).toStrictEqual(mockResult);
-      expect(departmentRepositoryMock.addEmployee).toHaveBeenCalledWith(
+      const result = await departmentService.addEmployeeToDepartment(
         deptId,
         empId
       );
+
+      expect(result).toStrictEqual(mockResult);
+      expect(
+        departmentRepositoryMock.addEmployeeToDepartment
+      ).toHaveBeenCalledWith(deptId, empId);
     });
   });
 
@@ -137,28 +143,38 @@ describe("DepartmentService", () => {
     });
   });
 
-  describe("deleteEmployee", () => {
+  describe("removeEmployeeFromDepartment", () => {
     it("called with an invalid department id", async () => {
       const deptId = 1;
       const empId = 1;
-      when(departmentRepositoryMock.deleteEmployee).calledWith(deptId, empId);
-      const result = await departmentService.deleteEmployee(deptId, empId);
-
-      expect(departmentRepositoryMock.deleteEmployee).toHaveBeenCalledWith(
+      when(departmentRepositoryMock.removeEmployeeFromDepartment).calledWith(
         deptId,
         empId
       );
+      const result = await departmentService.removeEmployeeFromDepartment(
+        deptId,
+        empId
+      );
+
+      expect(
+        departmentRepositoryMock.removeEmployeeFromDepartment
+      ).toHaveBeenCalledWith(deptId, empId);
     });
     it("called with an invalid employee id", async () => {
       const deptId = 1;
       const empId = 1;
-      when(departmentRepositoryMock.deleteEmployee).calledWith(deptId, empId);
-      const result = await departmentService.deleteEmployee(deptId, empId);
-
-      expect(departmentRepositoryMock.deleteEmployee).toHaveBeenCalledWith(
+      when(departmentRepositoryMock.removeEmployeeFromDepartment).calledWith(
         deptId,
         empId
       );
+      const result = await departmentService.removeEmployeeFromDepartment(
+        deptId,
+        empId
+      );
+
+      expect(
+        departmentRepositoryMock.removeEmployeeFromDepartment
+      ).toHaveBeenCalledWith(deptId, empId);
     });
     it("called with valid ids", async () => {
       const id = 1;

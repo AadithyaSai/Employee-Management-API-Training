@@ -31,7 +31,7 @@ export default class departmentRepository {
     return this.repository.save(department);
   }
 
-  async addEmployee(departmentId: number, employeeId: number) {
+  async addEmployeeToDepartment(departmentId: number, employeeId: number) {
     const department = await this.repository.findOne({
       where: { id: departmentId },
     });
@@ -66,7 +66,7 @@ export default class departmentRepository {
     await this.repository.softDelete({ id: departmentId });
   }
 
-  async deleteEmployee(departmentId: number, employeeId: number) {
+  async removeEmployeeFromDepartment(departmentId: number, employeeId: number) {
     const employee = await this.employeeRepository.findOneById(employeeId);
 
     if (

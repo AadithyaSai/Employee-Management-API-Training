@@ -24,8 +24,11 @@ export default class DepartmentService {
     return result;
   }
 
-  async addEmployee(departmentId: number, employeeId: number) {
-    const result = await this.repo.addEmployee(departmentId, employeeId);
+  async addEmployeeToDepartment(departmentId: number, employeeId: number) {
+    const result = await this.repo.addEmployeeToDepartment(
+      departmentId,
+      employeeId
+    );
     this.logger.info(
       `Employee with email ${result.email} added to department ${result.department.name}`
     );
@@ -47,8 +50,8 @@ export default class DepartmentService {
     this.logger.info(`Deleted department`);
   }
 
-  async deleteEmployee(departmentId: number, employeeId: number) {
+  async removeEmployeeFromDepartment(departmentId: number, employeeId: number) {
     this.logger.info(`Removed employee from department`);
-    await this.repo.deleteEmployee(departmentId, employeeId);
+    await this.repo.removeEmployeeFromDepartment(departmentId, employeeId);
   }
 }

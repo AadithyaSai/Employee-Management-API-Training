@@ -37,7 +37,7 @@ export default class DepartmentController {
     this.router.post(
       "/:id/employees/:empid",
       checkRole([permissionsEnum.WriteEmployee]),
-      this.addEmployee.bind(this)
+      this.addEmployeeToDepartment.bind(this)
     );
     this.router.get(
       "/:id/employees",
@@ -47,7 +47,7 @@ export default class DepartmentController {
     this.router.delete(
       "/:id/employees/:empid",
       checkRole([permissionsEnum.DeleteDepartment]),
-      this.deleteEmployee.bind(this)
+      this.removeEmployeeFromDepartment.bind(this)
     );
   }
 
@@ -97,14 +97,17 @@ export default class DepartmentController {
     }
   }
 
-  async addEmployee(req: Request, res: Response, next: NextFunction) {
+  async addEmployeeToDepartment(req: Request, res: Response, next: NextFunction) {
     try {
       const deptId = parseInt(req.params.id);
       const empId = parseInt(req.params.empid);
 
       if (Number.isNaN(empId)) throw new HttpException(400, "Bad request");
 
-      const result = await this.departmentService.addEmployee(deptId, empId);
+      const result = await this.departmentService.addEmployeeToDepartment(
+        deptId,
+        empId
+      );
       res.status(200).send(result);
     } catch (error) {
       next(error);
@@ -143,11 +146,15 @@ export default class DepartmentController {
     }
   }
 
-  async deleteEmployee(req: Request, res: Response, next: NextFunction) {
+  async removeEmployeeFromDepartment(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
     const deptId = Number(req.params.id);
     const empId = Number(req.params.empid);
 
-    await this.departmentService.deleteEmployee(deptId, empId);
+    await this.departmentService.removeEmployeeFromDepartment(deptId, empId);
     res.status(204).send();
     try {
     } catch (error) {
