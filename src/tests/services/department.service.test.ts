@@ -6,14 +6,20 @@ import Department from "../../entities/department.entity";
 import UpdateDepartmentDto from "../../dto/update-department.dto";
 import CreateDepartmentDto from "../../dto/create-department.dto";
 import Employee from "../../entities/employee.entity";
+import EmployeeService from "../../services/employee.service";
 
 describe("DepartmentService", () => {
   let departmentRepositoryMock: MockProxy<DepartmentRepository>;
+  let employeeServiceMock: MockProxy<EmployeeService>;
   let departmentService: DepartmentService;
 
   beforeEach(() => {
     departmentRepositoryMock = mock<DepartmentRepository>();
-    departmentService = new DepartmentService(departmentRepositoryMock);
+    employeeServiceMock = mock<EmployeeService>();
+    departmentService = new DepartmentService(
+      departmentRepositoryMock,
+      employeeServiceMock
+    );
   });
 
   describe("getDepartments", () => {
@@ -194,6 +200,9 @@ describe("DepartmentService", () => {
       const updateDetails = {
         name: "some dept",
       } as UpdateDepartmentDto;
+      when(departmentRepositoryMock.getDepartments)
+        .calledWith()
+        .mockReturnValue([]);
       when(departmentRepositoryMock.updateDepartment)
         .calledWith(id, updateDetails)
         .mockReturnValue(updateDetails);
@@ -207,6 +216,9 @@ describe("DepartmentService", () => {
       const updateDetails = {
         name: "some dept",
       } as UpdateDepartmentDto;
+      when(departmentRepositoryMock.getDepartments)
+        .calledWith()
+        .mockReturnValue([{ id }]);
       when(departmentRepositoryMock.updateDepartment)
         .calledWith(id, updateDetails)
         .mockReturnValue(updateDetails);

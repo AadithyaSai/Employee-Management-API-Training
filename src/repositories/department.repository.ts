@@ -1,7 +1,7 @@
 import { Repository } from "typeorm";
 import Department from "../entities/department.entity";
-import HttpException from "../exception/httpException";
 import EmployeeRepository from "./employee.repository";
+import Employee from "../entities/employee.entity";
 
 export default class departmentRepository {
   constructor(
@@ -14,69 +14,38 @@ export default class departmentRepository {
   }
 
   async getEmployeesFromDepartment(departmentId: number) {
-    const department = await this.repository.findOne({
-      where: { id: departmentId },
-    });
-    if (!department) {
-      throw new HttpException(404, "No such department");
-    }
-
     return await this.repository
       .createQueryBuilder()
+      .where("Department.id = :id", { id: departmentId })
       .leftJoinAndSelect("Department.employee", "Employees")
-      .getMany();
+      .getOne();
   }
 
   async createDepartment(department: Department) {
     return this.repository.save(department);
   }
 
-  async addEmployeeToDepartment(departmentId: number, employeeId: number) {
-    const department = await this.repository.findOne({
-      where: { id: departmentId },
-    });
-    if (!department) {
-      throw new HttpException(404, "No such department");
-    }
-    const employee = await this.employeeRepository.findOneById(employeeId);
-    if (!employee) {
-      throw new HttpException(404, "No such employee");
-    }
-
+  async addEmployeeToDepartment(department: Department, employee: Employee) {
     employee.department = department;
-    return await this.employeeRepository.updateOneById(employeeId, employee);
+    return await this.employeeRepository.updateOneById(employee.id, employee);
+  }
+
+  async merge(
+    deptData1: Department,
+    deptData2: Department
+  ): Promise<Department> {
+    return this.repository.merge(deptData1, deptData2);
   }
 
   async updateDepartment(departmentId: number, department: Department) {
-    const departmentDetails = await this.repository.findOne({
-      where: { id: departmentId },
-    });
-    if (!departmentDetails) {
-      throw new HttpException(404, "No such department");
-    }
-
-    this.repository.merge(departmentDetails, department);
-    return this.repository.save(departmentDetails);
+    return this.repository.save(department);
   }
 
   async deleteDepartment(departmentId: number) {
-    if (!(await this.repository.findOneBy({ id: departmentId }))) {
-      throw new HttpException(404, "No such department");
-    }
     await this.repository.softDelete({ id: departmentId });
   }
 
   async removeEmployeeFromDepartment(departmentId: number, employeeId: number) {
-    const employee = await this.employeeRepository.findOneById(employeeId);
-
-    if (
-      !employee ||
-      !employee.department ||
-      employee.department.id != departmentId
-    ) {
-      throw new HttpException(404, "No such employee or department");
-    }
-
-    await this.employeeRepository.deleteDepartment(employeeId);
+    return await this.employeeRepository.deleteDepartment(employeeId);
   }
 }

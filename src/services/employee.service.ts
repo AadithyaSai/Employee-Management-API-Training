@@ -5,6 +5,7 @@ import { instanceToPlain, plainToInstance } from "class-transformer";
 import { CreateEmployeeDto } from "../dto/create-employee.dto";
 import { UpdateEmployeeDto } from "../dto/update-employee.dto";
 import { hash } from "bcrypt";
+import HttpException from "../exception/httpException";
 
 export default class EmployeeService {
   private logger = LoggerService.getInstance("EmployeeService()");
@@ -23,26 +24,36 @@ export default class EmployeeService {
   }
 
   async getEmployeeById(employeeId: number): Promise<Employee> {
-    return this.repo.findOneById(employeeId);
+    const result = this.repo.findOneById(employeeId);
+    if (!result) throw new HttpException(404, "No such employee");
+    return result;
   }
 
   async getEmployeeByEmail(email: string): Promise<Employee> {
-    return this.repo.findOneByEmail(email);
+    const result = this.repo.findOneByEmail(email);
+    if (!result) throw new HttpException(404, "No such employee");
+    return result;
   }
 
   async updateEmployeeById(employeeId: number, employee: UpdateEmployeeDto) {
+    const oldEmployee = await this.repo.findOneById(employeeId);
+    if (!oldEmployee) throw new HttpException(404, "No such employee");
+
     const employeeData = plainToInstance(Employee, instanceToPlain(employee));
     employeeData.password = employeeData.password
       ? await hash(employeeData.password, 10)
       : undefined;
 
-    const result = await this.repo.updateOneById(employeeId, employeeData);
+    const updatedEmployee = await this.repo.merge(oldEmployee, employeeData);
+    const result = await this.repo.updateOneById(employeeId, updatedEmployee);
     this.logger.info(`Updated employee with email ${result.email}`);
     return result;
   }
 
   async deleteEmployeeById(employeeId: number): Promise<void> {
-    await this.repo.deleteCascadingOneById(employeeId);
+    const employee = await this.getEmployeeById(employeeId);
+    if (!employee) throw new HttpException(404, "No such employee");
+    await this.repo.deleteCascadingOneById(employee);
     this.logger.info(`Deleted employee`);
   }
 }
