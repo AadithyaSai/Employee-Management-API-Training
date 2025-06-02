@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 
 import dataSource from "./db/dataSource";
 import employeeRouter from "./routers/employee.route";
@@ -16,6 +17,7 @@ const server = express();
 const logger = LoggerService.getInstance("index()");
 
 // Middleware
+server.use(cors());
 server.use(loggerMiddleware);
 server.use(processedTimeMiddleware);
 server.use(express.json());
