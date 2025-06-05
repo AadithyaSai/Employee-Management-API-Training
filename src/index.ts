@@ -10,6 +10,7 @@ import authRouter from "./routers/auth.route";
 import authenticationMiddleware from "./middleware/authentication.middleware";
 import { LoggerService } from "./services/logger.service";
 import departmentRouter from "./routers/department.route";
+import delayMiddleware from "./middleware/delay.middleware";
 
 const PORT = 3000;
 
@@ -19,6 +20,7 @@ const logger = LoggerService.getInstance("index()");
 // Middleware
 server.use(cors());
 server.use(loggerMiddleware);
+server.use(delayMiddleware);
 server.use(processedTimeMiddleware);
 server.use(express.json());
 
