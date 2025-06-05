@@ -85,7 +85,14 @@ export default class DepartmentController {
       );
       const errors = await validate(createDepartmentDto);
       if (errors.length > 0) {
-        throw new HttpException(400, JSON.stringify(errors));
+        throw new HttpException(
+          400,
+          errors
+            .map((err) => {
+              return Object.values(err.constraints);
+            })
+            .join(", ")
+        );
       }
       const savedDepartment = await this.departmentService.createDepartment(
         createDepartmentDto
@@ -97,7 +104,11 @@ export default class DepartmentController {
     }
   }
 
-  async addEmployeeToDepartment(req: Request, res: Response, next: NextFunction) {
+  async addEmployeeToDepartment(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
       const deptId = parseInt(req.params.id);
       const empId = parseInt(req.params.empid);
@@ -123,7 +134,14 @@ export default class DepartmentController {
       );
       const errors = await validate(updateDepartmentDto);
       if (errors.length > 0) {
-        throw new HttpException(400, JSON.stringify(errors));
+        throw new HttpException(
+          400,
+          errors
+            .map((err) => {
+              return Object.values(err.constraints);
+            })
+            .join(", ")
+        );
       }
       const savedDepartment = await this.departmentService.updateDepartment(
         deptId,

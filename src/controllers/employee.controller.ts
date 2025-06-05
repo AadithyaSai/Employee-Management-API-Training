@@ -46,9 +46,15 @@ export default class EmployeeController {
       const createEmployeeDto = plainToInstance(CreateEmployeeDto, req.body);
       const errors = await validate(createEmployeeDto);
       if (errors.length > 0) {
-        throw new HttpException(400, JSON.stringify(errors));
+        throw new HttpException(
+          400,
+          errors
+            .map((err) => {
+              return Object.values(err.constraints);
+            })
+            .join(", ")
+        );
       }
-      createEmployeeDto;
       const savedEmployee = await this.employeeService.createEmployee(
         createEmployeeDto
       );
@@ -94,7 +100,14 @@ export default class EmployeeController {
       const updateEmployeeDto = plainToInstance(UpdateEmployeeDto, req.body);
       const errors = await validate(updateEmployeeDto);
       if (errors.length > 0) {
-        throw new HttpException(400, JSON.stringify(errors));
+        throw new HttpException(
+          400,
+          errors
+            .map((err) => {
+              return err.constraints;
+            })
+            .join(",")
+        );
       }
       const updatedEmployee = await this.employeeService.updateEmployeeById(
         employeeId,
