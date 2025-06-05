@@ -30,7 +30,7 @@ export default class AuthService {
     const payload: JwtPayloadDto = {
       id: employee.id,
       email: employee.email,
-      roles: employee.roles,
+      role: employee.role,
     };
 
     this.logger.info(

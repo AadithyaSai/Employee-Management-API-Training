@@ -1,5 +1,5 @@
 import {
-  IsDate,
+  IsDateString,
   IsEmail,
   IsEnum,
   IsNotEmpty,
@@ -34,7 +34,7 @@ export class CreateEmployeeDto {
 
   @IsOptional()
   @IsEnum(EmployeeRoleEnum)
-  roles: EmployeeRoleEnum;
+  role: EmployeeRoleEnum;
 
   @IsOptional()
   @IsEnum(EmployeeStatusEnum)
@@ -45,7 +45,7 @@ export class CreateEmployeeDto {
   employeeId: string;
 
   @IsOptional()
-  @IsDate()
+  @IsDateString()
   dateOfJoining: Date;
 
   @IsNotEmpty()

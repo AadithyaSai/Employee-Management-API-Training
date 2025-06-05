@@ -43,9 +43,9 @@ const permissions = {
 export default function checkRole(actions: permissionsEnum[]) {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
-      const roles = req.user.roles;
+      const role = req.user.role;
       actions.forEach((action) => {
-        if (!permissions[roles].includes(action)) {
+        if (!permissions[role].includes(action)) {
           throw new HttpException(403, "User is not authorized");
         }
       });

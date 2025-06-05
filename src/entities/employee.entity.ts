@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+} from "typeorm";
 import AbstractEntity from "./abstract.entity";
 import Address from "./address.entity";
 import Department from "./department.entity";
@@ -19,7 +26,11 @@ export enum EmployeeStatusEnum {
 
 @Entity()
 class Employee extends AbstractEntity {
-  @Column({ unique: true })
+  @Column()
+  @Index("UQ_TITLE", ["title"], {
+    unique: true,
+    where: "(deleted_at IS NULL)",
+  })
   email: string;
 
   @Column()
@@ -36,7 +47,7 @@ class Employee extends AbstractEntity {
     enum: EmployeeRoleEnum,
     default: EmployeeRoleEnum.DEVELOPER,
   })
-  roles: EmployeeRoleEnum;
+  role: EmployeeRoleEnum;
 
   @Column({
     type: "enum",

@@ -1,5 +1,5 @@
 import {
-  IsDate,
+  IsDateString,
   IsEmail,
   IsEnum,
   IsNumber,
@@ -33,7 +33,7 @@ export class UpdateEmployeeDto {
 
   @IsOptional()
   @IsEnum(EmployeeRoleEnum)
-  roles: EmployeeRoleEnum;
+  role: EmployeeRoleEnum;
 
   @IsOptional()
   @IsEnum(EmployeeStatusEnum)
@@ -44,7 +44,7 @@ export class UpdateEmployeeDto {
   employeeId: string;
 
   @IsOptional()
-  @IsDate()
+  @IsDateString()
   dateOfJoining: Date;
 
   @IsOptional()
